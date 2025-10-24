@@ -120,8 +120,7 @@ results = trainer.train_all_models(X_train, y_train)
 
 ## 📁 Project Structure
 
-<img width="832" height="623" alt="structure" src="https://github.com/user-attachments/assets/c4a33d51-8d70-4ac1-b135-ce9c1485b1c0" />
-
+<img width="832" height="623" alt="structure" src="https://github.com/user-attachments/assets/3a345567-93b1-4601-82f4-77e691fdde6b" />
 
 ## 📊 Output & Results
 
