@@ -1,0 +1,154 @@
+MAIN MENU
+├── 1. TRAIN NEW MODEL
+│   ├── 1.1 Generate Sample Data & Train
+│   │   ├── Enter restaurant name
+│   │   ├── Enter number of days (default: 365)
+│   │   ├── Choose Training Mode:
+│   │   │   ├── CPU Mode:
+│   │   │   │   ├── Auto-discover available models
+│   │   │   │   ├── Excludes Neural Network
+│   │   │   │   └── Trains ~8-10 models (depending on what's available)
+│   │   │   │
+│   │   │   └── GPU Mode:
+│   │   │       ├── Auto-discover available models
+│   │   │       ├── ⭐ NEW: Neural Network Toggle (y/n)
+│   │   │       │   ├── YES → Train with NN (~11 models)
+│   │   │       │   └── NO  → Skip NN (~10 models)
+│   │   │       └── GPU-accelerated training
+│   │   │
+│   │   └── Auto Pipeline: 
+│   │       Generate → Preprocess → Train (discovered models) → Evaluate → Save
+│   │       ├── Saves model metadata (GPU used, NN included, models count)
+│   │       └── All future operations use this metadata
+│   │
+│   └── 1.2 Use Custom CSV Data
+│       ├── Enter restaurant name
+│       ├── Enter CSV path
+│       ├── Universal Adapter (auto-detect columns)
+│       │   ├── Check for saved configuration
+│       │   └── Interactive column mapping if needed
+│       │
+│       ├── Choose Training Mode:
+│       │   ├── 1 - CPU Training
+│       │   │   ├── Auto-discovers available models
+│       │   │   ├── Excludes Neural Network
+│       │   │   └── Trains ~8-10 models
+│       │   │
+│       │   └── 2 - GPU Training
+│       │       ├── Auto-discovers available models
+│       │       ├── ⭐ NEW: Neural Network Toggle (y/n)
+│       │       │   ├── Shows impact info (slower, more memory)
+│       │       │   ├── YES → Include NN
+│       │       │   └── NO  → Skip NN (faster training)
+│       │       └── GPU-accelerated training
+│       │
+│       └── Auto Pipeline:
+│           Adapt → Preprocess → Train (dynamic models) → Evaluate → Save
+│           ├── Saves training metadata
+│           └── Stores model availability info
+│
+├── 2. MAKE PREDICTIONS
+│   ├── 2.1 Future Waste Prediction
+│   │   ├── ⭐ NEW: Shows which model is loaded
+│   │   ├── ⭐ NEW: Displays training info (GPU used, NN included)
+│   │   ├── Single Day Prediction
+│   │   │   ├── Enter date
+│   │   │   ├── Enter food item
+│   │   │   └── Optional: Expected customers
+│   │   │
+│   │   ├── Multiple Items (Single Day)
+│   │   │   ├── Enter date
+│   │   │   └── Predicts for all common food items
+│   │   │
+│   │   └── Weekly Forecast (7 Days)
+│   │       ├── Enter start date (or use tomorrow)
+│   │       └── Generates visualization
+│   │
+│   ├── 2.2 Real-time Prediction (Interactive CLI)
+│   │   ├── ⭐ NEW: Shows model info at start
+│   │   ├── Interactive input prompts
+│   │   └── Continuous prediction loop
+│   │
+│   └── 2.3 Batch Prediction from CSV
+│       ├── Enter CSV path
+│       ├── Uses trained model (checks metadata)
+│       └── Saves predictions with timestamp
+│
+├── 3. MANAGE RESTAURANTS
+│   ├── 3.1 View Restaurant Info
+│   │   ├── Restaurant details
+│   │   ├── ⭐ NEW: Training configuration
+│   │   │   ├── GPU used: Yes/No
+│   │   │   ├── Neural Network included: Yes/No
+│   │   │   ├── Total models trained: X
+│   │   │   └── Training date
+│   │   ├── Model statistics
+│   │   └── Prediction statistics
+│   │
+│   ├── 3.2 View Predictions History
+│   │   ├── Real-time predictions
+│   │   ├── Future predictions
+│   │   └── Both (separately stored)
+│   │
+│   ├── 3.3 Manage Configurations
+│   │   ├── View current config
+│   │   └── Update settings
+│   │
+│   ├── 3.4 Export Restaurant Data
+│   │   ├── Models
+│   │   ├── Predictions
+│   │   ├── Metadata
+│   │   └── Configurations
+│   │
+│   ├── 3.5 List All Restaurants
+│   │   ├── Shows all restaurants
+│   │   ├── ⭐ NEW: Shows training mode for each
+│   │   └── Model and prediction counts
+│   │
+│   └── 3.6 Delete Restaurant
+│       ├── Confirmation prompt
+│       └── Complete cleanup
+│
+├── 4. MODEL EVALUATION
+│   ├── 4.1 Evaluate Best Model
+│   │   ├── ⭐ NEW: Shows model training info
+│   │   │   ├── Model name
+│   │   │   ├── GPU used: Yes/No
+│   │   │   ├── Neural Network: Yes/No
+│   │   │   └── Total models trained
+│   │   │
+│   │   ├── Comprehensive metrics
+│   │   ├── Visualization plots
+│   │   └── Saves evaluation report
+│   │
+│   ├── 4.2 Compare All Models
+│   │   ├── ⭐ NEW: Shows training session info
+│   │   ├── ⭐ NEW: Only evaluates trained models
+│   │   ├── Loads available model versions
+│   │   ├── Performance comparison
+│   │   └── Generates comparison plot
+│   │
+│   └── 4.3 Generate Comprehensive Report
+│       ├── ⭐ NEW: Includes training configuration
+│       ├── Actual vs Predicted plot
+│       ├── Residuals analysis
+│       ├── Feature importance (if available)
+│       ├── Metrics report (JSON)
+│       └── Model information
+│
+├── 5. BENCHMARK GPU PERFORMANCE
+│   ├── Quick GPU Check
+│   │   ├── GPU availability
+│   │   ├── Device information
+│   │   └── Memory status
+│   │
+│   └── Full Benchmark (Multiple Data Sizes)
+│       ├── Tests various dataset sizes
+│       ├── CPU vs GPU comparison
+│       └── Performance metrics
+|
+│
+└── 0. EXIT
+    ├── Cleanup GPU memory (if used)
+    ├── Save logs
+    └── Graceful shutdown
