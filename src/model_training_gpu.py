@@ -225,3 +225,23 @@ class ModelTrainerGPU:
         print(f"💾 Waste prediction model saved: {filename}")
         
         return filename
+    
+    def save_all_models(self, results):
+        """Save all trained models to disk"""
+        import os
+        import joblib
+        
+        os.makedirs('data/models', exist_ok=True)
+        
+        for model_name, model_data in results.items():
+            try:
+                # Create safe filename
+                safe_name = model_name.replace(" ", "_").replace("(", "").replace(")", "")
+                model_path = f'data/models/{safe_name}.pkl'
+                
+                # Save model
+                joblib.dump(model_data['model'], model_path)
+                print(f"   ✅ Saved {model_name} to {model_path}")
+                
+            except Exception as e:
+                print(f"   ⚠️ Could not save {model_name}: {e}")
