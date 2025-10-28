@@ -66,6 +66,38 @@ class NeuralNetworkModel(BaseModel):
         # Model is created during fit()
         return None
     
+    def get_params(self, deep=True):
+        """
+        Get parameters for this estimator (sklearn compatibility).
+        
+        Args:
+            deep: If True, will return parameters for this estimator and
+                contained sub-objects that are estimators.
+        
+        Returns:
+            Dictionary of parameter names mapped to their values.
+        """
+        return {
+            'epochs': self.epochs,
+            'batch_size': self.batch_size,
+            'learning_rate': self.learning_rate,
+            'use_gpu': self.use_gpu
+        }
+
+    def set_params(self, **params):
+        """
+        Set the parameters of this estimator (sklearn compatibility).
+        
+        Args:
+            **params: Estimator parameters.
+        
+        Returns:
+            self: Estimator instance.
+        """
+        for key, value in params.items():
+            setattr(self, key, value)
+        return self
+    
     def fit(self, X, y):
         """Train the neural network"""
         print(f"\n🔄 Training Neural Network...")
@@ -144,7 +176,7 @@ class NeuralNetworkModel(BaseModel):
         self.training_time = time.time() - start_time
         print(f"   Training time: {self.training_time:.2f}s")
         
-        return self.model
+        return self
     
     def predict(self, X):
         """Make predictions"""
