@@ -5,6 +5,7 @@ import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
 import random
+import os
 
 
 class DataGenerator:
@@ -31,8 +32,21 @@ class DataGenerator:
         
         self.weather_conditions = ['sunny', 'rainy', 'cloudy', 'stormy']
     
-    def generate(self, n_days=365, save_path=None):
-        """Generate sample data for n_days"""
+    def generate(self, n_days=365, save_path=None, create_backup=False):
+        """
+        Generate sample data for n_days
+        
+        Args:
+            n_days: Number of days to generate data for
+            save_path: Path where to save the CSV file
+            create_backup: If True, creates timestamped backup
+        
+        Returns:
+            DataFrame with generated data
+        """
+        print("\n" + "="*70)
+        print("📊 GENERATING SAMPLE FOOD WASTE DATA")
+        print("="*70)
         print(f"\n🔄 Generating {n_days} days of sample data...")
         
         data = []
@@ -78,12 +92,77 @@ class DataGenerator:
         
         df = pd.DataFrame(data)
         
+        # Display summary statistics
+        self._display_summary(df, n_days)
+        
+        # Save to file
         if save_path:
-            df.to_csv(save_path, index=False)
-            print(f"✅ Generated {len(df)} records")
-            print(f"💾 Saved to: {save_path}")
+            self._save_data(df, save_path, create_backup)
+        else:
+            print("\n⚠️  No save path provided - data not saved to disk")
         
         return df
+    
+    def _display_summary(self, df, n_days):
+        """Display summary statistics of generated data"""
+        print("\n" + "─"*70)
+        print("📊 DATA SUMMARY")
+        print("─"*70)
+        
+        print(f"\n✅ Successfully generated data:")
+        print(f"   Total records: {len(df):,}")
+        print(f"   Days covered: {n_days}")
+        print(f"   Food items: {df['food_item'].nunique()}")
+        print(f"   Date range: {df['date'].min()} to {df['date'].max()}")
+        
+        print(f"\n📈 Waste Statistics:")
+        print(f"   Average daily waste: {df.groupby('date')['quantity_wasted'].sum().mean():.2f} kg")
+        print(f"   Total waste: {df['quantity_wasted'].sum():.2f} kg")
+        print(f"   Average waste cost: ${df['waste_cost'].mean():.2f}")
+        print(f"   Total waste cost: ${df['waste_cost'].sum():.2f}")
+        
+        print(f"\n🍽️  Top 3 Wasted Items:")
+        top_wasted = df.groupby('food_item')['quantity_wasted'].sum().sort_values(ascending=False).head(3)
+        for i, (item, waste) in enumerate(top_wasted.items(), 1):
+            print(f"   {i}. {item}: {waste:.2f} kg")
+    
+    def _save_data(self, df, save_path, create_backup=False):
+        """Save data to CSV with proper directory creation"""
+        print("\n" + "─"*70)
+        print("💾 SAVING DATA")
+        print("─"*70)
+        
+        # Create directory if it doesn't exist
+        directory = os.path.dirname(save_path)
+        if directory and not os.path.exists(directory):
+            os.makedirs(directory, exist_ok=True)
+            print(f"✅ Created directory: {directory}")
+        
+        # Save main file
+        df.to_csv(save_path, index=False)
+        file_size = os.path.getsize(save_path) / 1024  # Size in KB
+        
+        print(f"\n✅ Data saved successfully!")
+        print(f"   📁 Location: {os.path.abspath(save_path)}")
+        print(f"   📊 Records: {len(df):,}")
+        print(f"   💾 File size: {file_size:.2f} KB")
+        
+        # Create backup if requested
+        if create_backup:
+            timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+            backup_path = save_path.replace('.csv', f'_backup_{timestamp}.csv')
+            df.to_csv(backup_path, index=False)
+            print(f"   🔄 Backup: {backup_path}")
+        
+        # Validate saved file
+        try:
+            test_df = pd.read_csv(save_path)
+            if len(test_df) == len(df):
+                print(f"\n✅ File validation passed - data saved correctly")
+            else:
+                print(f"\n⚠️  Warning: Saved file has different row count")
+        except Exception as e:
+            print(f"\n❌ Error validating saved file: {e}")
     
     def _get_seasonal_multiplier(self, month):
         """Get seasonal multiplier"""
@@ -149,3 +228,23 @@ class DataGenerator:
             'total_cost': round(quantity_prepared * unit_cost, 2),
             'waste_cost': round(quantity_wasted * unit_cost, 2)
         }
+    
+    def generate_custom(self, n_days=365, food_items=None, save_path=None):
+        """
+        Generate data with custom food items
+        
+        Args:
+            n_days: Number of days
+            food_items: Dictionary of {item_name: category}
+            save_path: Where to save
+        """
+        if food_items:
+            original_items = self.food_items.copy()
+            self.food_items = food_items
+            
+            df = self.generate(n_days, save_path)
+            
+            self.food_items = original_items  # Restore
+            return df
+        else:
+            return self.generate(n_days, save_path)

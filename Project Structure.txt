@@ -1,0 +1,68 @@
+Food-Waste-Prediction/
+│
+├── 📂 core/                           # Core functionality
+│   ├── data_loader.py                 # CSV loading and validation
+│   ├── data_generator.py              # Sample data generation
+│   ├── preprocessor.py                # Feature engineering
+│   ├── adapter.py                     # Universal CSV adapter
+│   ├── feature_engineer.py            # Advanced features
+│   └── config_manager.py              # Configuration handling
+│
+├── 📂 models/                         # ⭐ DYNAMIC MODEL DIRECTORY
+│   ├── base_model.py                  # Base model class
+│   ├── linear_regression.py           # Auto-discovered
+│   ├── ridge_regression.py            # Auto-discovered
+│   ├── xgboost_model.py               # Auto-discovered (GPU)
+│   ├── neural_network.py              # Auto-discovered (GPU, optional)
+│   ├── ...                            # Add your own models here!
+│   ├── model_factory.py               # Dynamic model creation
+│   └── model_selector.py              # Best model selection
+│
+├── 📂 training/                       # Training pipeline
+│   ├── trainer_unified.py             # Unified training (CPU/GPU)
+│   ├── evaluator.py                   # Model evaluation
+│   └── cross_validator.py             # Cross-validation
+│
+├── 📂 prediction/                     # Prediction modules
+│   ├── predictor.py                   # Base predictor
+│   ├── future_predictor.py            # Future predictions
+│   └── realtime_predictor.py          # Real-time predictions
+│
+├── 📂 workflows/                      # Complete workflows
+│   ├── training_workflow.py           # End-to-end training
+│   ├── prediction_workflow.py         # Prediction orchestration
+│   ├── evaluation_workflow.py         # Evaluation pipelines
+│   └── benchmark_workflow.py          # GPU benchmarking
+│
+├── 📂 storage/                        # Data persistence
+│   ├── model_storage.py               # Model saving/loading
+│   ├── prediction_storage.py          # Prediction history
+│   └── restaurant_manager.py          # Restaurant management
+│
+├── 📂 utils/                          # Utilities
+│   ├── gpu_utils.py                   # GPU detection & management
+│   ├── visualization.py               # Plotting and charts
+│   ├── logger.py                      # Logging system
+│   └── file_utils.py                  # File operations
+│
+├── 📂 data/                           # Auto-created data directory
+│   └── restaurants/                   # Restaurant-specific data
+│       └── {restaurant_name}/
+│           ├── models/                # Trained models
+│           │   ├── best_model.pkl
+│           │   ├── best_model_metadata.json
+│           │   └── preprocessor.pkl
+│           ├── predictions/           # Prediction history
+│           │   ├── future/
+│           │   └── realtime/
+│           ├── config.json            # Restaurant config
+│           └── metadata.json          # Restaurant metadata
+│
+├── 📂 results/                        # Auto-generated results
+│   ├── plots/                         # Visualization plots
+│   └── reports/                       # Evaluation reports
+│
+├── 🐍 main.py                         # ⭐ MAIN ENTRY POINT
+├── 📄 requirements.txt                # Python dependencies
+├── 📄 README.md                       # This file
+└── 📄 .gitignore                      # Git ignore rules
