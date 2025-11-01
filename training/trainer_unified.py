@@ -10,16 +10,18 @@ from models.model_selector import ModelSelector
 class UnifiedTrainer:
     """Unified trainer for all models (CPU/GPU) with dynamic model discovery"""
     
-    def __init__(self, use_gpu=False, include_neural_network=True):
+    def __init__(self, use_gpu=False, include_neural_network=True, nn_params=None):
         """
         Initialize trainer
         
         Args:
             use_gpu: Whether to use GPU acceleration
             include_neural_network: Whether to train neural network (only relevant if use_gpu=True)
+            nn_params: Dictionary of neural network parameters (optional)
         """
         self.use_gpu = use_gpu
         self.include_neural_network = include_neural_network
+        self.nn_params = nn_params  # ⭐ NEW
         self.results = {}
         self.best_model = None
         self.best_model_name = None
@@ -44,8 +46,9 @@ class UnifiedTrainer:
         
         # Get all available models dynamically
         models = ModelFactory.get_all_models(
-            use_gpu=self.use_gpu,
-            include_neural_network=self.include_neural_network
+        use_gpu=self.use_gpu,
+        include_neural_network=self.include_neural_network,
+        nn_params=self.nn_params 
         )
         
         if not models:

@@ -58,13 +58,14 @@ class ModelFactory:
         return available
     
     @staticmethod
-    def get_all_models(use_gpu=False, include_neural_network=True):
+    def get_all_models(use_gpu=False, include_neural_network=True, nn_params=None):
         """
         Get all available models dynamically.
         
         Args:
             use_gpu: Whether to use GPU acceleration
             include_neural_network: Whether to include neural network models
+            nn_params: Dictionary of neural network parameters (optional)
         
         Returns:
             Dictionary of model instances
@@ -85,12 +86,28 @@ class ModelFactory:
                 
                 # Create model instance with appropriate parameters
                 if info['is_neural_network']:
-                    # Neural network with specific parameters
-                    model = model_class(
-                        epochs=100,
-                        batch_size=128,
-                        use_gpu=use_gpu
-                    )
+                    # Neural network with custom or default parameters
+                    if nn_params:
+                        # Use custom parameters
+                        print(f"   🎛️  Using custom NN parameters:")
+                        print(f"      Epochs: {nn_params.get('epochs', 100)}")
+                        print(f"      Batch Size: {nn_params.get('batch_size', 128)}")
+                        print(f"      Learning Rate: {nn_params.get('learning_rate', 0.001)}")
+                        
+                        model = model_class(
+                            epochs=nn_params.get('epochs', 100),
+                            batch_size=nn_params.get('batch_size', 128),
+                            learning_rate=nn_params.get('learning_rate', 0.001),
+                            use_gpu=use_gpu
+                        )
+                    else:
+                        # Use default parameters
+                        model = model_class(
+                            epochs=100,
+                            batch_size=128,
+                            learning_rate=0.001,
+                            use_gpu=use_gpu
+                        )
                 elif 'Ridge' in friendly_name:
                     model = model_class(alpha=1.0, use_gpu=use_gpu)
                 elif 'Lasso' in friendly_name:

@@ -165,13 +165,14 @@ class FoodWastePredictionSystem:
         n_days = int(n_days) if n_days else 365
         
         # GPU and Neural Network options
-        use_gpu, include_neural_network = self._ask_gpu_option()
+        use_gpu, include_neural_network, nn_params = self._ask_gpu_option()
 
         # Initialize workflow
         workflow = TrainingWorkflow(
             restaurant_name, 
             use_gpu=use_gpu,
-            include_neural_network=include_neural_network
+            include_neural_network=include_neural_network,
+            nn_params=nn_params  #  NEW
         )
         
         # Train
@@ -214,6 +215,7 @@ class FoodWastePredictionSystem:
 
         use_gpu = (mode == '2')
         include_neural_network = False
+        nn_params = None
 
         if use_gpu and self.gpu_manager.gpu_available:
             # Ask about neural network for GPU mode
@@ -225,6 +227,8 @@ class FoodWastePredictionSystem:
             
             if include_neural_network:
                 print("   ✅ Will train with Neural Network")
+                # Ask for parameters
+                nn_params = self._ask_nn_parameters()
             else:
                 print("   ⏭️  Neural Network will be skipped")
 
@@ -232,7 +236,8 @@ class FoodWastePredictionSystem:
         workflow = TrainingWorkflow(
             restaurant_name, 
             use_gpu=use_gpu,
-            include_neural_network=include_neural_network
+            include_neural_network=include_neural_network,
+            nn_params=nn_params  # ⭐ NEW
         )
         
         # Train
@@ -778,11 +783,11 @@ class FoodWastePredictionSystem:
         Neural Network prompt appears ONLY for GPU mode.
         
         Returns:
-            Tuple of (use_gpu, include_neural_network)
+            Tuple of (use_gpu, include_neural_network, nn_params)
         """
         if not self.gpu_manager.gpu_available:
             print("\n💻 GPU not available, using CPU")
-            return False, False
+            return False, False, None
         
         print("\n🔥 GPU available!")
         print(f"   Device: {self.gpu_manager.device_name}")
@@ -791,6 +796,7 @@ class FoodWastePredictionSystem:
         
         use_gpu = (choice == 'y')
         include_neural_network = False
+        nn_params = None
         
         if use_gpu:
             # Ask about neural network ONLY when GPU is selected
@@ -810,11 +816,94 @@ class FoodWastePredictionSystem:
             
             if include_neural_network:
                 print("   ✅ Neural Network will be included")
+                
+                # Ask for parameter customization
+                nn_params = self._ask_nn_parameters()
             else:
                 print("   ⏭️  Neural Network will be skipped")
                 print("   ℹ️  Will train with 10 other models")
         
-        return use_gpu, include_neural_network
+        return use_gpu, include_neural_network, nn_params
+
+    def _ask_nn_parameters(self):
+        """
+        Ask user for neural network parameters
+        
+        Returns:
+            Dictionary of NN parameters or None for defaults
+        """
+        print("\n" + "─"*60)
+        print("⚙️  NEURAL NETWORK PARAMETERS")
+        print("─"*60)
+        print("\n1 - Use Default Parameters (Recommended)")
+        print("    • Epochs: 100")
+        print("    • Batch Size: 128")
+        print("    • Learning Rate: 0.001")
+        print()
+        print("2 - Custom Parameters (Advanced)")
+        print("    • Fine-tune for your specific data")
+        
+        param_choice = input("\nChoose option (1/2): ").strip()
+        
+        if param_choice == '2':
+            print("\n📝 Enter custom parameters (press Enter for default):")
+            
+            try:
+                # Epochs
+                epochs_input = input(f"   Epochs [default: 100]: ").strip()
+                epochs = int(epochs_input) if epochs_input else 100
+                
+                # Batch Size
+                batch_input = input(f"   Batch Size [default: 128]: ").strip()
+                batch_size = int(batch_input) if batch_input else 128
+                
+                # Learning Rate
+                lr_input = input(f"   Learning Rate [default: 0.001]: ").strip()
+                learning_rate = float(lr_input) if lr_input else 0.001
+                
+                # Hidden Layers (optional advanced feature)
+                print("\n   Advanced (optional):")
+                hidden_input = input(f"   Hidden Layer Sizes [default: 256,128,64,32]: ").strip()
+                if hidden_input:
+                    hidden_layers = [int(x.strip()) for x in hidden_input.split(',')]
+                else:
+                    hidden_layers = [256, 128, 64, 32]
+                
+                # Dropout (optional)
+                dropout_input = input(f"   Dropout Rate [default: 0.3]: ").strip()
+                dropout = float(dropout_input) if dropout_input else 0.3
+                
+                nn_params = {
+                    'epochs': epochs,
+                    'batch_size': batch_size,
+                    'learning_rate': learning_rate,
+                    'hidden_layers': hidden_layers,
+                    'dropout': dropout
+                }
+                
+                # Display summary
+                print("\n✅ Custom parameters:")
+                print(f"   Epochs: {epochs}")
+                print(f"   Batch Size: {batch_size}")
+                print(f"   Learning Rate: {learning_rate}")
+                print(f"   Hidden Layers: {hidden_layers}")
+                print(f"   Dropout: {dropout}")
+                
+                confirm = input("\nConfirm these parameters? (y/n): ").strip().lower()
+                
+                if confirm == 'y':
+                    return nn_params
+                else:
+                    print("   Using default parameters instead")
+                    return None
+                    
+            except ValueError as e:
+                print(f"\n⚠️  Invalid input: {e}")
+                print("   Using default parameters instead")
+                return None
+        else:
+            print("\n✅ Using default parameters")
+            return None
     
     def exit_system(self):
         """Exit the system"""
