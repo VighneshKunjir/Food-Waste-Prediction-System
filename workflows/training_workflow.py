@@ -25,7 +25,7 @@ from utils.visualization import Visualizer  # ⭐ NEW IMPORT
 class TrainingWorkflow:
     """Orchestrate complete training workflow"""
     
-    def __init__(self, restaurant_name, use_gpu=False, include_neural_network=True):
+    def __init__(self, restaurant_name, use_gpu=False, include_neural_network=True, nn_params=None):
         """
         Initialize training workflow
         
@@ -33,10 +33,12 @@ class TrainingWorkflow:
             restaurant_name: Name of restaurant
             use_gpu: Whether to use GPU acceleration
             include_neural_network: Whether to train neural network (GPU only)
+            nn_params: Dictionary of neural network parameters (optional)
         """
         self.restaurant_name = restaurant_name
         self.use_gpu = use_gpu
         self.include_neural_network = include_neural_network
+        self.nn_params = nn_params  
         
         # Initialize components
         self.gpu_manager = GPUManager()
@@ -105,7 +107,8 @@ class TrainingWorkflow:
             
             trainer = UnifiedTrainer(
                 use_gpu=self.use_gpu,
-                include_neural_network=self.include_neural_network)
+                include_neural_network=self.include_neural_network,
+                nn_params=self.nn_params)
             
             self.results = trainer.train_all_models(X_train, y_train)
             
@@ -248,7 +251,8 @@ class TrainingWorkflow:
             
             trainer = UnifiedTrainer(
                 use_gpu=self.use_gpu,
-                include_neural_network=self.include_neural_network)
+                include_neural_network=self.include_neural_network,
+                nn_params=self.nn_params)
             
             self.results = trainer.train_all_models(X_train, y_train)
             
@@ -311,6 +315,7 @@ class TrainingWorkflow:
             'is_best': True,
             'use_gpu': self.use_gpu,
             'neural_network_included': self.include_neural_network,
+            'neural_network_params': self.nn_params,  
             'total_models_trained': len(self.results),
             'comparison': comparison_df.to_dict('records') if comparison_df is not None else None
         }
